@@ -165,15 +165,9 @@
             width: 100%;
         }
         
-        .developer-credit {
-            position: absolute;
-            bottom: 10px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 10px;
-            color: #9ca3af;
-            padding: 8px;
+        .cart-item {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-left: 4px solid #667eea;
         }
     </style>
 </head>
@@ -311,7 +305,7 @@
                     </div>
                 </div>
                 
-                <!-- Charts Row - FIXED HEIGHT -->
+                <!-- Charts Row -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                     <div class="glass-panel p-6 rounded-xl">
                         <h3 class="text-lg font-semibold mb-4 text-gray-800">Sales by Channel</h3>
@@ -355,104 +349,145 @@
                 </div>
             </div>
 
-            <!-- Sales Entry View -->
+            <!-- Sales Entry View - MULTI PRODUCT -->
             <div id="view-sales-entry" class="view-section hidden animate-fade-in">
-                <h2 class="text-3xl font-bold text-white mb-6">New Sales Entry</h2>
+                <h2 class="text-3xl font-bold text-white mb-6">New Sales Entry (Multi-Product)</h2>
                 
-                <div class="glass-panel p-6 rounded-xl max-w-4xl mx-auto">
-                    <form id="salesForm" onsubmit="app.saveSale(event)" class="space-y-6">
-                        
-                        <!-- Row 1: Basic Info -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
-                                <input type="date" id="saleDate" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Bill Number (Auto)</label>
-                                <input type="text" id="billNo" readonly class="w-full px-4 py-2 rounded-lg bg-gray-100 border border-gray-300 text-gray-600 font-medium">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Sale Point/Channel</label>
-                                <select id="salePoint" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                    <option value="">Select Channel</option>
-                                    <option value="ONLINE ORDER">Online Order</option>
-                                    <option value="OFFLINE ORDER">Offline Order</option>
-                                    <option value="STALL">Stall</option>
-                                    <option value="FOOT PATH">Foot Path</option>
-                                    <option value="WHATSAPP">WhatsApp</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <!-- Row 2: Company & Category -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Company</label>
-                                <select id="company" required onchange="app.loadCategories()" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                    <option value="">Select Company</option>
-                                    <option value="MOSHLA GHAR">Moshla Ghar</option>
-                                    <option value="MADOXG">MADOXG</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                                <select id="category" required onchange="app.loadProducts()" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                    <option value="">Select Category</option>
-                                </select>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Left Panel - Bill Info & Product Entry -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Bill Information -->
+                        <div class="glass-panel p-6 rounded-xl">
+                            <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Bill Information</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                                    <input type="date" id="saleDate" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Bill Number (Auto)</label>
+                                    <input type="text" id="billNo" readonly class="w-full px-4 py-2 rounded-lg bg-gray-100 border border-gray-300 text-gray-600 font-medium">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Sale Point/Channel</label>
+                                    <select id="salePoint" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                        <option value="">Select Channel</option>
+                                        <option value="ONLINE ORDER">Online Order</option>
+                                        <option value="OFFLINE ORDER">Offline Order</option>
+                                        <option value="STALL">Stall</option>
+                                        <option value="FOOT PATH">Foot Path</option>
+                                        <option value="WHATSAPP">WhatsApp</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                        
-                        <!-- Row 3: Product & Quantity -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Product</label>
-                                <select id="product" required onchange="app.updateRate()" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                    <option value="">Select Product</option>
-                                </select>
+
+                        <!-- Add Product Form -->
+                        <div class="glass-panel p-6 rounded-xl">
+                            <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Add Product to Bill</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Company</label>
+                                    <select id="cartCompany" onchange="app.loadCartCategories()" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                        <option value="">Select Company</option>
+                                        <option value="MOSHLA GHAR">Moshla Ghar</option>
+                                        <option value="MADOXG">MADOXG</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                                    <select id="cartCategory" onchange="app.loadCartProducts()" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                        <option value="">Select Category</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
-                                <input type="number" id="quantity" required min="1" value="1" onchange="app.calculateTotals()" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Product</label>
+                                    <select id="cartProduct" onchange="app.updateCartRate()" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                        <option value="">Select Product</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                                    <input type="number" id="cartQty" min="1" value="1" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                </div>
                             </div>
+
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 bg-gray-50 p-4 rounded-lg">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Rate (₹)</label>
+                                    <input type="number" id="cartRate" readonly class="w-full px-3 py-2 rounded bg-white border border-gray-200 text-gray-700 font-medium">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Amount (₹)</label>
+                                    <input type="number" id="cartAmount" readonly class="w-full px-3 py-2 rounded bg-white border border-gray-200 text-purple-600 font-bold">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Margin (%)</label>
+                                    <input type="text" id="cartMargin" readonly class="w-full px-3 py-2 rounded bg-white border border-gray-200 text-gray-700">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Profit (₹)</label>
+                                    <input type="number" id="cartProfit" readonly class="w-full px-3 py-2 rounded bg-white border border-gray-200 text-green-600 font-bold">
+                                </div>
+                            </div>
+
+                            <button onclick="app.addToCart()" class="w-full py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all flex items-center justify-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                                <span>Add to Bill</span>
+                            </button>
                         </div>
-                        
-                        <!-- Auto-calculated Fields -->
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-lg">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">Rate (₹)</label>
-                                <input type="number" id="rate" readonly class="w-full px-3 py-2 rounded bg-white border border-gray-200 text-gray-700 font-medium">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">Sale Value (₹)</label>
-                                <input type="number" id="saleValue" readonly class="w-full px-3 py-2 rounded bg-white border border-gray-200 text-purple-600 font-bold">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">Margin (%)</label>
-                                <input type="text" id="margin" readonly class="w-full px-3 py-2 rounded bg-white border border-gray-200 text-gray-700">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-600 mb-1">Profit (₹)</label>
-                                <input type="number" id="profit" readonly class="w-full px-3 py-2 rounded bg-white border border-gray-200 text-green-600 font-bold">
-                            </div>
-                        </div>
-                        
+
                         <!-- Remarks -->
-                        <div>
+                        <div class="glass-panel p-6 rounded-xl">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Remarks (Optional)</label>
                             <textarea id="remarks" rows="2" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
                         </div>
-                        
-                        <!-- Submit Buttons -->
-                        <div class="flex space-x-4">
-                            <button type="submit" class="flex-1 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all">
-                                Save Sale Entry
+                    </div>
+
+                    <!-- Right Panel - Cart Summary -->
+                    <div class="lg:col-span-1">
+                        <div class="glass-panel p-6 rounded-xl sticky top-6">
+                            <h3 class="text-lg font-semibold mb-4 text-gray-800 border-b pb-2 flex justify-between items-center">
+                                <span>Bill Summary</span>
+                                <span class="text-sm bg-purple-100 text-purple-700 px-2 py-1 rounded-full" id="cartCount">0 items</span>
+                            </h3>
+                            
+                            <div id="cartItems" class="space-y-3 max-h-96 overflow-y-auto mb-4">
+                                <p class="text-gray-500 text-center py-8">No products added yet</p>
+                            </div>
+
+                            <div class="border-t pt-4 space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Total Items:</span>
+                                    <span class="font-semibold" id="totalItems">0</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Total Quantity:</span>
+                                    <span class="font-semibold" id="totalQty">0</span>
+                                </div>
+                                <div class="flex justify-between text-lg font-bold text-purple-600 border-t pt-2">
+                                    <span>Total Amount:</span>
+                                    <span id="totalAmount">₹0</span>
+                                </div>
+                                <div class="flex justify-between text-sm text-green-600">
+                                    <span>Total Profit:</span>
+                                    <span id="totalProfit">₹0</span>
+                                </div>
+                            </div>
+
+                            <button onclick="app.saveBill()" class="w-full mt-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all">
+                                Save Bill
                             </button>
-                            <button type="button" onclick="app.resetForm()" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-all">
-                                Reset
+                            
+                            <button onclick="app.clearCart()" class="w-full mt-2 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-all">
+                                Clear All
                             </button>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
 
@@ -613,6 +648,7 @@
             salesData: [],
             productsData: {},
             charts: {},
+            cart: [], // Shopping cart for multi-product bills
             
             // Initial Product Data from Excel
             defaultProducts: {
@@ -737,6 +773,232 @@
                 // Auto-generate bill number when entering sales entry
                 if(view === 'sales-entry') {
                     document.getElementById('billNo').value = this.generateBillNumber();
+                    this.cart = [];
+                    this.renderCart();
+                }
+            },
+            
+            // Cart Functions for Multi-Product Bills
+            loadCartCategories() {
+                const company = document.getElementById('cartCompany').value;
+                const categorySelect = document.getElementById('cartCategory');
+                categorySelect.innerHTML = '<option value="">Select Category</option>';
+                document.getElementById('cartProduct').innerHTML = '<option value="">Select Product</option>';
+                this.clearCartInputs();
+                
+                if(company && this.productsData[company]) {
+                    Object.keys(this.productsData[company]).forEach(cat => {
+                        categorySelect.innerHTML += `<option value="${cat}">${cat}</option>`;
+                    });
+                }
+            },
+            
+            loadCartProducts() {
+                const company = document.getElementById('cartCompany').value;
+                const category = document.getElementById('cartCategory').value;
+                const productSelect = document.getElementById('cartProduct');
+                productSelect.innerHTML = '<option value="">Select Product</option>';
+                this.clearCartInputs();
+                
+                if(company && category && this.productsData[company][category]) {
+                    this.productsData[company][category].forEach((prod, idx) => {
+                        productSelect.innerHTML += `<option value="${idx}">${prod.name} (₹${prod.rate})</option>`;
+                    });
+                }
+            },
+            
+            updateCartRate() {
+                const company = document.getElementById('cartCompany').value;
+                const category = document.getElementById('cartCategory').value;
+                const productIdx = document.getElementById('cartProduct').value;
+                const qty = parseInt(document.getElementById('cartQty').value) || 1;
+                
+                if(company && category && productIdx !== '') {
+                    const prod = this.productsData[company][category][productIdx];
+                    const amount = prod.rate * qty;
+                    const profit = amount * prod.margin;
+                    
+                    document.getElementById('cartRate').value = prod.rate;
+                    document.getElementById('cartAmount').value = amount.toFixed(2);
+                    document.getElementById('cartMargin').value = (prod.margin * 100).toFixed(0) + '%';
+                    document.getElementById('cartProfit').value = profit.toFixed(2);
+                }
+            },
+            
+            clearCartInputs() {
+                document.getElementById('cartRate').value = '';
+                document.getElementById('cartAmount').value = '';
+                document.getElementById('cartMargin').value = '';
+                document.getElementById('cartProfit').value = '';
+                document.getElementById('cartQty').value = 1;
+            },
+            
+            addToCart() {
+                const company = document.getElementById('cartCompany').value;
+                const category = document.getElementById('cartCategory').value;
+                const productIdx = document.getElementById('cartProduct').value;
+                const qty = parseInt(document.getElementById('cartQty').value) || 1;
+                
+                if(!company || !category || productIdx === '') {
+                    this.showToast('Please select company, category and product', 'error');
+                    return;
+                }
+                
+                const prod = this.productsData[company][category][productIdx];
+                const amount = prod.rate * qty;
+                const profit = amount * prod.margin;
+                
+                const cartItem = {
+                    id: Date.now(),
+                    company: company,
+                    category: category,
+                    product: prod.name,
+                    rate: prod.rate,
+                    quantity: qty,
+                    amount: amount,
+                    margin: prod.margin,
+                    profit: profit
+                };
+                
+                this.cart.push(cartItem);
+                this.renderCart();
+                this.showToast('Product added to bill', 'success');
+                
+                // Reset product selection but keep company/category for faster entry
+                document.getElementById('cartProduct').value = '';
+                document.getElementById('cartQty').value = 1;
+                this.clearCartInputs();
+            },
+            
+            removeFromCart(id) {
+                this.cart = this.cart.filter(item => item.id !== id);
+                this.renderCart();
+            },
+            
+            renderCart() {
+                const cartContainer = document.getElementById('cartItems');
+                const cartCount = document.getElementById('cartCount');
+                
+                if(this.cart.length === 0) {
+                    cartContainer.innerHTML = '<p class="text-gray-500 text-center py-8">No products added yet</p>';
+                    cartCount.textContent = '0 items';
+                    this.updateCartTotals();
+                    return;
+                }
+                
+                cartCount.textContent = `${this.cart.length} item${this.cart.length > 1 ? 's' : ''}`;
+                
+                cartContainer.innerHTML = this.cart.map(item => `
+                    <div class="cart-item p-3 rounded-lg flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="font-semibold text-gray-800">${item.product}</p>
+                                    <p class="text-xs text-gray-500">${item.company} | ${item.category}</p>
+                                    <p class="text-sm text-gray-600 mt-1">₹${item.rate} × ${item.quantity} = ₹${item.amount.toFixed(2)}</p>
+                                </div>
+                                <button onclick="app.removeFromCart(${item.id})" class="text-red-500 hover:text-red-700 ml-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                </button>
+                            </div>
+                            <p class="text-xs text-green-600 mt-1">Profit: ₹${item.profit.toFixed(2)}</p>
+                        </div>
+                    </div>
+                `).join('');
+                
+                this.updateCartTotals();
+            },
+            
+            updateCartTotals() {
+                const totalItems = this.cart.length;
+                const totalQty = this.cart.reduce((sum, item) => sum + item.quantity, 0);
+                const totalAmount = this.cart.reduce((sum, item) => sum + item.amount, 0);
+                const totalProfit = this.cart.reduce((sum, item) => sum + item.profit, 0);
+                
+                document.getElementById('totalItems').textContent = totalItems;
+                document.getElementById('totalQty').textContent = totalQty;
+                document.getElementById('totalAmount').textContent = '₹' + totalAmount.toLocaleString();
+                document.getElementById('totalProfit').textContent = '₹' + totalProfit.toLocaleString();
+            },
+            
+            clearCart() {
+                if(this.cart.length > 0 && !confirm('Clear all items from this bill?')) {
+                    return;
+                }
+                this.cart = [];
+                this.renderCart();
+                document.getElementById('cartCompany').value = '';
+                document.getElementById('cartCategory').innerHTML = '<option value="">Select Category</option>';
+                document.getElementById('cartProduct').innerHTML = '<option value="">Select Product</option>';
+                this.clearCartInputs();
+                document.getElementById('remarks').value = '';
+                this.showToast('Cart cleared', 'success');
+            },
+            
+            async saveBill() {
+                if(this.cart.length === 0) {
+                    this.showToast('Please add at least one product', 'error');
+                    return;
+                }
+                
+                const date = document.getElementById('saleDate').value;
+                const billNo = document.getElementById('billNo').value;
+                const salePoint = document.getElementById('salePoint').value;
+                const remarks = document.getElementById('remarks').value;
+                
+                if(!date || !salePoint) {
+                    this.showToast('Please fill date and channel', 'error');
+                    return;
+                }
+                
+                // Save each cart item as a separate sale record with same bill number
+                const savePromises = this.cart.map(item => {
+                    const sale = {
+                        id: Date.now() + Math.random(),
+                        date: date,
+                        billNo: billNo,
+                        salePoint: salePoint,
+                        company: item.company,
+                        category: item.category,
+                        product: item.product,
+                        quantity: item.quantity,
+                        rate: item.rate,
+                        saleValue: item.amount,
+                        margin: item.margin,
+                        profit: item.profit,
+                        remarks: remarks,
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    this.salesData.unshift(sale);
+                    
+                    if(typeof window.db !== 'undefined') {
+                        return window.dbSet(window.dbRef(window.db, `sales/${sale.id}`), sale);
+                    }
+                    return Promise.resolve();
+                });
+                
+                try {
+                    await Promise.all(savePromises);
+                    this.showToast(`Bill ${billNo} saved with ${this.cart.length} items!`, 'success');
+                    
+                    // Reset for next bill
+                    this.cart = [];
+                    this.renderCart();
+                    document.getElementById('billNo').value = this.generateBillNumber();
+                    document.getElementById('salePoint').value = '';
+                    document.getElementById('remarks').value = '';
+                    document.getElementById('cartCompany').value = '';
+                    document.getElementById('cartCategory').innerHTML = '<option value="">Select Category</option>';
+                    document.getElementById('cartProduct').innerHTML = '<option value="">Select Product</option>';
+                    this.clearCartInputs();
+                    
+                    if(this.currentView === 'dashboard') {
+                        this.updateDashboard();
+                    }
+                } catch(err) {
+                    console.error('Error saving bill:', err);
+                    this.showToast('Error saving bill', 'error');
                 }
             },
             
@@ -783,114 +1045,6 @@
                         console.error('Save error:', e);
                     }
                 }
-            },
-            
-            loadCategories() {
-                const company = document.getElementById('company').value;
-                const categorySelect = document.getElementById('category');
-                categorySelect.innerHTML = '<option value="">Select Category</option>';
-                document.getElementById('product').innerHTML = '<option value="">Select Product</option>';
-                
-                if(company && this.productsData[company]) {
-                    Object.keys(this.productsData[company]).forEach(cat => {
-                        categorySelect.innerHTML += `<option value="${cat}">${cat}</option>`;
-                    });
-                }
-            },
-            
-            loadProducts() {
-                const company = document.getElementById('company').value;
-                const category = document.getElementById('category').value;
-                const productSelect = document.getElementById('product');
-                productSelect.innerHTML = '<option value="">Select Product</option>';
-                
-                if(company && category && this.productsData[company][category]) {
-                    this.productsData[company][category].forEach((prod, idx) => {
-                        productSelect.innerHTML += `<option value="${idx}">${prod.name} (₹${prod.rate})</option>`;
-                    });
-                }
-            },
-            
-            updateRate() {
-                const company = document.getElementById('company').value;
-                const category = document.getElementById('category').value;
-                const productIdx = document.getElementById('product').value;
-                
-                if(company && category && productIdx !== '') {
-                    const prod = this.productsData[company][category][productIdx];
-                    document.getElementById('rate').value = prod.rate;
-                    document.getElementById('margin').value = (prod.margin * 100).toFixed(0) + '%';
-                    this.calculateTotals();
-                }
-            },
-            
-            calculateTotals() {
-                const rate = parseFloat(document.getElementById('rate').value) || 0;
-                const qty = parseInt(document.getElementById('quantity').value) || 0;
-                const marginText = document.getElementById('margin').value;
-                const margin = parseFloat(marginText) / 100 || 0;
-                
-                const saleValue = rate * qty;
-                const profit = saleValue * margin;
-                
-                document.getElementById('saleValue').value = saleValue.toFixed(2);
-                document.getElementById('profit').value = profit.toFixed(2);
-            },
-            
-            async saveSale(e) {
-                e.preventDefault();
-                
-                const company = document.getElementById('company').value;
-                const category = document.getElementById('category').value;
-                const productIdx = document.getElementById('product').value;
-                const product = this.productsData[company][category][productIdx];
-                
-                const sale = {
-                    id: Date.now(),
-                    date: document.getElementById('saleDate').value,
-                    billNo: document.getElementById('billNo').value,
-                    salePoint: document.getElementById('salePoint').value,
-                    company: company,
-                    category: category,
-                    product: product.name,
-                    quantity: parseInt(document.getElementById('quantity').value),
-                    rate: parseFloat(document.getElementById('rate').value),
-                    saleValue: parseFloat(document.getElementById('saleValue').value),
-                    margin: parseFloat(document.getElementById('margin').value) / 100,
-                    profit: parseFloat(document.getElementById('profit').value),
-                    remarks: document.getElementById('remarks').value,
-                    timestamp: new Date().toISOString()
-                };
-                
-                this.salesData.unshift(sale);
-                
-                if(typeof window.db !== 'undefined') {
-                    try {
-                        await window.dbSet(window.dbRef(window.db, `sales/${sale.id}`), sale);
-                        console.log('Sale saved to Firebase');
-                    } catch(err) {
-                        console.error('Error saving sale:', err);
-                    }
-                }
-                
-                this.showToast('Sale saved successfully!', 'success');
-                this.resetForm();
-                
-                if(this.currentView === 'dashboard') {
-                    this.updateDashboard();
-                }
-            },
-            
-            resetForm() {
-                document.getElementById('salesForm').reset();
-                this.setCurrentDate();
-                document.getElementById('billNo').value = this.generateBillNumber();
-                document.getElementById('category').innerHTML = '<option value="">Select Category</option>';
-                document.getElementById('product').innerHTML = '<option value="">Select Product</option>';
-                document.getElementById('rate').value = '';
-                document.getElementById('saleValue').value = '';
-                document.getElementById('margin').value = '';
-                document.getElementById('profit').value = '';
             },
             
             updateDashboard() {
