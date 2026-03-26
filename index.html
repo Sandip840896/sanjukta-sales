@@ -11,21 +11,24 @@
     <!-- Chart.js for Dashboard -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
     <!-- Firebase SDK (Modular) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
         import { getDatabase, ref, set, push, onValue, update, remove, get } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
         
-        // YOUR FIREBASE CONFIGURATION - ALREADY FILLED IN
+        // YOUR FIREBASE CONFIGURATION
         const firebaseConfig = {
-    apiKey: "AIzaSyBzYjpF14j4c8AaMZoSHswOw1I8_gnCm_o",
-    authDomain: "sanjukta-sales.firebaseapp.com",
-    databaseURL: "https://sanjukta-sales-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "sanjukta-sales",
-    storageBucket: "sanjukta-sales.firebasestorage.app",
-    messagingSenderId: "618655209291",
-    appId: "1:618655209291:web:b04b31450fce4ce1957ace"
-};
+            apiKey: "AIzaSyBzYjpF14j4c8AaMZoSHswOw1I8_gnCm_o",
+            authDomain: "sanjukta-sales.firebaseapp.com",
+            databaseURL: "https://sanjukta-sales-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "sanjukta-sales",
+            storageBucket: "sanjukta-sales.firebasestorage.app",
+            messagingSenderId: "618655209291",
+            appId: "1:618655209291:web:b04b31450fce4ce1957ace"
+        };
         
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
@@ -156,18 +159,21 @@
         .toast.success { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
         .toast.error { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
         
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
         }
         
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .developer-credit {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 10px;
+            color: #9ca3af;
+            padding: 8px;
         }
     </style>
 </head>
@@ -205,13 +211,13 @@
     <div id="mainApp" class="hidden min-h-screen flex flex-col md:flex-row">
         
         <!-- Sidebar -->
-        <aside class="w-full md:w-64 bg-white shadow-xl z-40">
+        <aside class="w-full md:w-64 bg-white shadow-xl z-40 flex flex-col relative" style="min-height: 100vh;">
             <div class="p-6 border-b border-gray-200">
                 <h2 class="text-2xl font-bold gradient-text">Sanjukta</h2>
                 <p class="text-xs text-gray-500 mt-1">Sales Management</p>
             </div>
             
-            <nav class="p-4 space-y-2">
+            <nav class="p-4 space-y-2 flex-1">
                 <button onclick="app.navigate('dashboard')" id="nav-dashboard" class="nav-item active w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                     <span>Dashboard</span>
@@ -238,11 +244,16 @@
                 </button>
             </nav>
             
-            <div class="p-4 border-t border-gray-200 mt-auto">
+            <div class="p-4 border-t border-gray-200">
                 <button onclick="app.logout()" class="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-all text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                     <span>Logout</span>
                 </button>
+                
+                <!-- Developer Credit -->
+                <div class="mt-4 pt-4 border-t border-gray-100 text-center">
+                    <p class="text-xs text-gray-400">System Developed by Sandip</p>
+                </div>
             </div>
         </aside>
 
@@ -300,16 +311,20 @@
                     </div>
                 </div>
                 
-                <!-- Charts Row -->
+                <!-- Charts Row - FIXED HEIGHT -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                     <div class="glass-panel p-6 rounded-xl">
                         <h3 class="text-lg font-semibold mb-4 text-gray-800">Sales by Channel</h3>
-                        <canvas id="channelChart" height="250"></canvas>
+                        <div class="chart-container">
+                            <canvas id="channelChart"></canvas>
+                        </div>
                     </div>
                     
                     <div class="glass-panel p-6 rounded-xl">
                         <h3 class="text-lg font-semibold mb-4 text-gray-800">Company Performance</h3>
-                        <canvas id="companyChart" height="250"></canvas>
+                        <div class="chart-container">
+                            <canvas id="companyChart"></canvas>
+                        </div>
                     </div>
                 </div>
                 
@@ -354,8 +369,8 @@
                                 <input type="date" id="saleDate" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Bill Number</label>
-                                <input type="text" id="billNo" required placeholder="e.g., 1001" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Bill Number (Auto)</label>
+                                <input type="text" id="billNo" readonly class="w-full px-4 py-2 rounded-lg bg-gray-100 border border-gray-300 text-gray-600 font-medium">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Sale Point/Channel</label>
@@ -455,12 +470,16 @@
                             <option value="FOOT PATH">Foot Path</option>
                             <option value="WHATSAPP">WhatsApp</option>
                         </select>
+                        <button onclick="app.exportToExcel()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            <span>Export Excel</span>
+                        </button>
                     </div>
                 </div>
                 
                 <div class="glass-panel p-6 rounded-xl">
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left">
+                        <table class="w-full text-left" id="salesTable">
                             <thead class="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
                                 <tr>
                                     <th class="px-4 py-3 text-sm font-medium">Date</th>
@@ -536,7 +555,9 @@
                 </div>
                 
                 <div class="glass-panel p-6 rounded-xl">
-                    <canvas id="reportChart" height="100"></canvas>
+                    <div class="chart-container">
+                        <canvas id="reportChart"></canvas>
+                    </div>
                 </div>
             </div>
 
@@ -647,9 +668,38 @@
             },
             
             init() {
-                document.getElementById('saleDate').valueAsDate = new Date();
-                document.getElementById('filterDate').valueAsDate = new Date();
+                this.setCurrentDate();
                 this.loadFromFirebase();
+            },
+            
+            setCurrentDate() {
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                const formattedDate = `${yyyy}-${mm}-${dd}`;
+                
+                document.getElementById('saleDate').value = formattedDate;
+                document.getElementById('filterDate').value = formattedDate;
+                document.getElementById('reportStartDate').value = formattedDate;
+                document.getElementById('reportEndDate').value = formattedDate;
+            },
+            
+            getCurrentDate() {
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd}`;
+            },
+            
+            generateBillNumber() {
+                const now = new Date();
+                const year = now.getFullYear().toString().slice(-2);
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const random = Math.floor(1000 + Math.random() * 9000);
+                return `${year}${month}${day}-${random}`;
             },
             
             login() {
@@ -683,6 +733,11 @@
                 if(view === 'sales-history') this.loadSalesHistory();
                 if(view === 'products') this.renderProducts();
                 if(view === 'reports') this.generateReport();
+                
+                // Auto-generate bill number when entering sales entry
+                if(view === 'sales-entry') {
+                    document.getElementById('billNo').value = this.generateBillNumber();
+                }
             },
             
             async loadFromFirebase() {
@@ -828,7 +883,8 @@
             
             resetForm() {
                 document.getElementById('salesForm').reset();
-                document.getElementById('saleDate').valueAsDate = new Date();
+                this.setCurrentDate();
+                document.getElementById('billNo').value = this.generateBillNumber();
                 document.getElementById('category').innerHTML = '<option value="">Select Category</option>';
                 document.getElementById('product').innerHTML = '<option value="">Select Product</option>';
                 document.getElementById('rate').value = '';
@@ -838,7 +894,7 @@
             },
             
             updateDashboard() {
-                const today = new Date().toISOString().split('T')[0];
+                const today = this.getCurrentDate();
                 const todaySales = this.salesData.filter(s => s.date === today);
                 
                 const todayTotal = todaySales.reduce((sum, s) => sum + s.saleValue, 0);
@@ -874,41 +930,73 @@
             },
             
             updateCharts() {
+                // Destroy existing charts
+                if(this.charts.channel) {
+                    this.charts.channel.destroy();
+                }
+                if(this.charts.company) {
+                    this.charts.company.destroy();
+                }
+                
                 const channelData = {};
                 this.salesData.forEach(s => {
                     channelData[s.salePoint] = (channelData[s.salePoint] || 0) + s.saleValue;
                 });
                 
+                // If no data, show default
+                if(Object.keys(channelData).length === 0) {
+                    channelData['No Data'] = 1;
+                }
+                
                 const ctx1 = document.getElementById('channelChart').getContext('2d');
-                if(this.charts.channel) this.charts.channel.destroy();
                 this.charts.channel = new Chart(ctx1, {
                     type: 'doughnut',
                     data: {
                         labels: Object.keys(channelData),
                         datasets: [{
                             data: Object.values(channelData),
-                            backgroundColor: ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe']
+                            backgroundColor: ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#43e97b']
                         }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false }
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
                 });
                 
                 const moshlaTotal = this.salesData.filter(s => s.company === 'MOSHLA GHAR').reduce((sum, s) => sum + s.saleValue, 0);
                 const madoxgTotal = this.salesData.filter(s => s.company === 'MADOXG').reduce((sum, s) => sum + s.saleValue, 0);
                 
                 const ctx2 = document.getElementById('companyChart').getContext('2d');
-                if(this.charts.company) this.charts.company.destroy();
                 this.charts.company = new Chart(ctx2, {
                     type: 'bar',
                     data: {
                         labels: ['Moshla Ghar', 'MADOXG'],
                         datasets: [{
                             label: 'Sales (₹)',
-                            data: [moshlaTotal, madoxgTotal],
+                            data: [moshlaTotal || 0, madoxgTotal || 0],
                             backgroundColor: ['#4facfe', '#43e97b']
                         }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false, 
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: { 
+                            y: { 
+                                beginAtZero: true 
+                            } 
+                        } 
+                    }
                 });
             },
             
@@ -949,6 +1037,43 @@
                         `;
                     });
                 }
+            },
+            
+            exportToExcel() {
+                const filterDate = document.getElementById('filterDate').value;
+                const filterChannel = document.getElementById('filterChannel').value;
+                
+                let filtered = this.salesData;
+                if(filterDate) filtered = filtered.filter(s => s.date === filterDate);
+                if(filterChannel) filtered = filtered.filter(s => s.salePoint === filterChannel);
+                
+                if(filtered.length === 0) {
+                    this.showToast('No data to export', 'error');
+                    return;
+                }
+                
+                const exportData = filtered.map(sale => ({
+                    'Date': sale.date,
+                    'Bill No': sale.billNo,
+                    'Channel': sale.salePoint,
+                    'Company': sale.company,
+                    'Category': sale.category,
+                    'Product': sale.product,
+                    'Quantity': sale.quantity,
+                    'Rate (₹)': sale.rate,
+                    'Sale Value (₹)': sale.saleValue,
+                    'Profit (₹)': sale.profit.toFixed(2),
+                    'Remarks': sale.remarks || ''
+                }));
+                
+                const ws = XLSX.utils.json_to_sheet(exportData);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Sales Report");
+                
+                const fileName = `Sales_Report_${this.getCurrentDate()}.xlsx`;
+                XLSX.writeFile(wb, fileName);
+                
+                this.showToast('Excel downloaded successfully!', 'success');
             },
             
             filterSales() {
@@ -1100,38 +1225,62 @@
                     dailyData[s.date] = (dailyData[s.date] || 0) + s.saleValue;
                 });
                 
+                // Sort dates
+                const sortedDates = Object.keys(dailyData).sort();
+                const sortedValues = sortedDates.map(d => dailyData[d]);
+                
+                if(this.charts.report) {
+                    this.charts.report.destroy();
+                }
+                
                 const ctx = document.getElementById('reportChart').getContext('2d');
-                if(this.charts.report) this.charts.report.destroy();
                 this.charts.report = new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels: Object.keys(dailyData).sort(),
+                        labels: sortedDates,
                         datasets: [{
                             label: 'Daily Sales (₹)',
-                            data: Object.keys(dailyData).sort().map(d => dailyData[d]),
+                            data: sortedValues,
                             borderColor: '#667eea',
                             backgroundColor: 'rgba(102, 126, 234, 0.1)',
                             fill: true,
                             tension: 0.4
                         }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false }
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            }
+                        }
+                    }
                 });
             },
             
             quickReport(period) {
                 const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                const formattedToday = `${yyyy}-${mm}-${dd}`;
+                
                 let start, end;
                 
                 if(period === 'today') {
-                    start = end = today.toISOString().split('T')[0];
+                    start = end = formattedToday;
                 } else if(period === 'week') {
                     const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-                    start = weekAgo.toISOString().split('T')[0];
-                    end = today.toISOString().split('T')[0];
+                    const wyyyy = weekAgo.getFullYear();
+                    const wmm = String(weekAgo.getMonth() + 1).padStart(2, '0');
+                    const wdd = String(weekAgo.getDate()).padStart(2, '0');
+                    start = `${wyyyy}-${wmm}-${wdd}`;
+                    end = formattedToday;
                 } else if(period === 'month') {
-                    start = today.toISOString().slice(0, 7) + '-01';
-                    end = today.toISOString().split('T')[0];
+                    start = `${yyyy}-${mm}-01`;
+                    end = formattedToday;
                 }
                 
                 document.getElementById('reportStartDate').value = start;
